@@ -29,6 +29,7 @@ jobs:
       run: npm run start &
     - name: Integration test
       run: npm test
+  #Deploy to Render
   deploy:
     runs-on: ubuntu-latest
     steps:
