@@ -1,25 +1,37 @@
-pipeline
-    {
-        agent any
-    
+pipeline {
+    agent any
         stages {
-            stage('Build') {
+            stage('Install NPM dependencies') {
                 steps {
-                    echo 'Building...'
-                    // Add build steps here
+                    bat 'npm install'
                 }
             }
-            stage('Test') {
-                steps {
-                    echo 'Testing...'
-                    // Add test steps here
+            stage('Test and Audit') {
+                parallel {
+                    stage('Run unit tests') {
+                        steps {
+                            bat "npm test"
+                        }
+                    }
+                    stage('Run integration tests') {
+                        steps {
+                            echo "Running integration tests"
+                        }
+                    }
                 }
             }
-            stage('Deploy') {
-                steps {
-                    echo 'Deploying...'
-                    // Add deploy steps here
-                }
+        }
+
+        stage("Deploy to Production") {
+            steps {
+                input message: 'Do you want to deploy?', 
+                      ok: 'Deploy'
+            }
+        }
+
+        stage("Deploy") {
+            steps {
+                echo "Deploying application..."
             }
         }
     }
